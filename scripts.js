@@ -12,7 +12,6 @@ Player.prototype.makeMove = function (index) {
         Gameboard.displayGameboard();
         return true;
     } else {
-        console.log((`Position ${index} is already taken!`));
         return false;
     }
 }
@@ -20,6 +19,7 @@ Player.prototype.makeMove = function (index) {
 const players = []
 const moustapha = new Player("moustapha", "X");
 const doudou = new Player("doudou", "O");
+const foo = new Player("doudou", "Z");
 
 players.push(moustapha);
 players.push(doudou);
@@ -45,13 +45,6 @@ const Gameboard = (function Gameboard() {
 
 const Game = (function Game() {
     Gameboard.displayGameboard();
-
-    function pickKicker(array) {
-        let kicker;
-        (Math.random(array) < 0.5) ? kicker = array[0] : kicker = array[1];
-        kicker.starter = true;
-        return kicker;
-    }
 
     function createPlayer() {
         const name = prompt(`Player number ${players.length + 1}, what is your name`);
@@ -87,21 +80,19 @@ const Game = (function Game() {
         }
 
         if (players.length === 2) {
-            const firstPlayer = pickKicker(players);
-            let firstPlayerIndex = players.indexOf(firstPlayer);
+            let randomIndex = Math.floor(Math.random() * players.length);
+
             while (!isWinner(Gameboard.gameboard)) {
-                const currentPlayer = players[firstPlayerIndex];
-                const playerMove = prompt(`${currentPlayer.name}, pick a move`)
+                const currentPlayer = players[randomIndex];
+                let playerMove;
+                do {
+                    playerMove = parseInt(prompt(`${currentPlayer.name}, pick a move`))
+                } while (isNaN(playerMove) || playerMove < 0 || playerMove > 8 || Gameboard.gameboard[playerMove] !== null);
                 currentPlayer.makeMove(playerMove);
-                firstPlayerIndex = alternate(players, firstPlayerIndex);
+                randomIndex = alternate(players, randomIndex);
             }
 
-            // Get the winning symbol
-            const winnerSymbol = isWinner(Gameboard.gameboard);
-            // Get the winner
-            const winner = getWinner(winnerSymbol)
-            // Announce the winner
-            console.log(`${winner.toUpperCase()} WON`)
+            console.log(isWinner(Gameboard.gameboard));
         }
     }
 
@@ -117,10 +108,19 @@ const Game = (function Game() {
 
             if (isMatch(array, element[0], element[1], element[2])) {
                 // Return the winning symbol;
-                return array[element[0]];
+
+                return getWinner(array[element[0]]);
+
             }
 
         }
+
+        // Check if it's a tie
+        // If no winner and board is full, it's a tie
+        if (array.every(cell => cell !== null)) {
+            return "It's a tie";
+        }
+
         return false;
     }
 
@@ -129,7 +129,7 @@ const Game = (function Game() {
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
             if (player.symbol === winningSymbol) {
-                return player.name;
+                return `${player.name.toUpperCase()} WON!`;
             }
         }
     }
