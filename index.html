@@ -9,9 +9,100 @@
 </head>
 
 <body>
-    <h1>Tic Tac Toe Project</h1>
+    <main>
+        <h1>Tic Tac Toe Project</h1>
 
-    <script src="./scripts.js"></script>
+        <div class="container">
+            <div></div>
+            <div class="board">
+                <h4 class="player one">Name: X</h4>
+                <div class="cells">
+                    <div class="cell">0</div>
+                    <div class="cell">1</div>
+                    <div class="cell">2</div>
+                    <div class="cell">3</div>
+                    <div class="cell x">X</div>
+                    <div class="cell">5</div>
+                    <div class="cell">6</div>
+                    <div class="cell o">O</div>
+                    <div class="cell">8</div>
+                </div>
+                <h4 class="player two">Name: O</h4>
+
+                <h3 class="result">NAME WON!</h3>
+
+                <div class="buttons">
+                    <button class="start">START</button>
+                    <button class="reset">RESET</button>
+                </div>
+            </div>
+
+            <form action="" method="post" class="form">
+                <caption>Add New Player</caption>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" id="name" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label for="symbol">Symbol:</label>
+                    <select name="symbol" id="symbol">
+                        <option value="" disabled selected>Select symbol</option>
+                        <option>X</option>
+                        <option>O</option>
+                    </select>
+                </div>
+                <button class="submit">Submit</button>
+            </form>
+            <button class="add show">+</button>
+        </div>
+    </main>
+
+
+
+    <script src=" ./scripts.js"></script>
+    <script>
+        const formElement = document.querySelector(".form");
+
+        const addPlayerButton = document.querySelector(".add");
+
+        const showFormButton = document.querySelector(".show");
+        const hideFormButton = document.querySelector(".hide");
+
+        if (showFormButton) {
+            showFormButton.addEventListener("click", function () {
+                changeClass();
+            })
+        } else if (hideFormButton) {
+            hideFormButton.addEventListener("click", function () {
+                changeClass();
+            })
+        }
+
+        function changeClass() {
+            if (addPlayerButton.classList.contains("show")) {
+                addPlayerButton.classList.remove("show");
+                addPlayerButton.classList.add("hide");
+            } else if (addPlayerButton.classList.contains("hide")) {
+                addPlayerButton.classList.remove("hide");
+                addPlayerButton.classList.add("show");
+            }
+
+            console.log(addPlayerButton.className);
+
+            if (addPlayerButton.classList.contains("hide")) {
+                addPlayerButton.textContent = "X";
+                formElement.style.display = "block";
+            } else if (addPlayerButton.classList.contains("show")) {
+                addPlayerButton.textContent = "+";
+                formElement.style.display = "none";
+            }
+        }
+
+
+        function hideform() {
+            formElement.style.display = "none";
+        }
+    </script>
 
 </body>
 
