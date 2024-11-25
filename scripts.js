@@ -24,20 +24,25 @@ const foo = new Player("doudou", "Z");
 players.push(moustapha);
 players.push(doudou);
 
+// Capture the div containing the cells from the DOM
+const cellsContainer = document.querySelector(".cells");
 
 // The Gameboard
 const Gameboard = (function Gameboard() {
     const gameboard = Array(9).fill(null);
 
     function displayGameboard(board = gameboard) {
-        for (let i = 0; i < board.length; i += 3) {
-            console.log(
-                board.slice(i, i + 3).map(cell => cell === null ? " " : cell).join(" | ")
-            )
-            if (i < 6) {
-                console.log("--+---+--");
-            }
+        // Build the html of each cell
+        let divAccumulator = [];
+        for (let i = 0; i < board.length; i++) {
+            const cellContent = board[i] === null ? (i + 1) : board[i]
+            divAccumulator.push(`<div class="cell">${cellContent}</div>`);
         }
+
+        // Update the html of the cells' container
+        cellsContainer.innerHTML = divAccumulator.join("");
+
+        return divAccumulator;
     }
 
     return { gameboard, displayGameboard };

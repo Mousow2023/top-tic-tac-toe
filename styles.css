@@ -48,14 +48,31 @@ h1 {
     font-size: 50px;
     cursor: pointer;
     padding: 0;
+    transition: background-color 0.3s;
+}
+
+.cell:hover {
+    background-color: #eee16d;
 }
 
 .cell.x {
     background-color: #FF5733;
+    transition: background-color 0.3s;
+}
+
+.cell.x:hover,
+.cell.x:active {
+    background-color: #ff7b5e;
 }
 
 .cell.o {
     background-color: #3498DB;
+    transition: background-color 0.3s;
+}
+
+.cell.o:hover,
+.cell.o:active {
+    background-color: #71b4e0;
 }
 
 .player {
@@ -100,13 +117,21 @@ button.start {
     background-color: #8E44AD;
 }
 
+button.start:hover {
+    background-color: #61227c;
+    transition: background-color 0.3s;
+}
+
 button.reset {
     background-color: #E74C3C;
+    transition: background-color 0.3s;
+}
+
+button.reset:hover {
+    background-color: #e0331f;
 }
 
 /* FORM STYLES */
-
-
 form {
     font-size: 20px;
     display: none;
@@ -142,13 +167,12 @@ button.submit {
 }
 
 button.add {
-    font-size: 30px;
-    width: 5rem;
-    padding: 0.2rem;
+    font-size: inherit;
+    padding: .5rem 1rem;
     border: none;
     background-color: #0D6EFD;
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
-    align-self: self-start;
+    align-self: start;
 }
