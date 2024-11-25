@@ -6,8 +6,8 @@ function Player(name, symbol) {
 }
 
 Player.prototype.makeMove = function (index) {
-    if (Gameboard.gameboard[index] === null) {
-        Gameboard.gameboard[index] = this.symbol;
+    if (Gameboard.gameboard[index - 1] === null) {
+        Gameboard.gameboard[index - 1] = this.symbol;
         this.moves++;
         Gameboard.displayGameboard();
         return true;
@@ -35,8 +35,15 @@ const Gameboard = (function Gameboard() {
         // Build the html of each cell
         let divAccumulator = [];
         for (let i = 0; i < board.length; i++) {
-            const cellContent = board[i] === null ? (i + 1) : board[i]
-            divAccumulator.push(`<div class="cell">${cellContent}</div>`);
+            const cellValue = board[i];
+            const cellText = board[i] === null ? (i + 1) : board[i];
+
+            if (board[i] !== null) {
+                divAccumulator.push(`<div class="cell ${cellValue.toLowerCase()}">${cellText}</div>`)
+            } else {
+                divAccumulator.push(`<div class="cell">${cellText}</div>`);
+            }
+
         }
 
         // Update the html of the cells' container
