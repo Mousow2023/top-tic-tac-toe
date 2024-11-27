@@ -32,6 +32,22 @@ const currentPlayerElement = document.querySelector(".current-player");
 const playerMoveInput = document.querySelector(".player-move");
 const submitMoveButton = document.querySelector(".submit-move");
 
+// Capture the result section from the DOM
+const resultElement = document.querySelector(".result");
+
+// Capture the start button
+const startButton = document.querySelector(".start");
+// Capture the reset button
+const resetButton = document.querySelector(".reset");
+// Capture the 
+
+
+startButton.addEventListener("click", function () {
+    Game.playMatch();
+});
+
+
+
 // The Gameboard
 const Gameboard = (function Gameboard() {
     const gameboard = Array(9).fill(null);
@@ -128,7 +144,7 @@ const Game = (function Game() {
                 // Check if there's a winner or a tie
                 const result = isWinner(Gameboard.gameboard);
                 if (result) {
-                    alert(result);
+                    resultElement.textContent = result;
                 }
 
                 // Alternate to the next player and update the UI
@@ -138,14 +154,13 @@ const Game = (function Game() {
                 // Clear the input field for the next move
                 playerMoveInput.value = "";
 
-
             });
-
-
-
-
-
         }
+    }
+
+    function reset() {
+        Gameboard.gameboard = Array(9).fill(null);
+        Gameboard.displayGameboard(Gameboard.gameboard);
     }
 
 
@@ -187,7 +202,7 @@ const Game = (function Game() {
         }
     }
 
-    return { isWinner, playMatch, alternate }
+    return { isWinner, playMatch, alternate, reset }
 
 })();
 
