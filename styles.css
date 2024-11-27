@@ -7,6 +7,32 @@ h1 {
     text-align: center;
 }
 
+/* MOVE INPUT SYLES */
+.move-input-container {
+    border: 2px solid;
+    padding: 1rem 0;
+    color: #000;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
+.move-input-container input {
+    font: inherit;
+    width: 50%;
+    border-radius: 5px;
+}
+
+.move-input-container button {
+    border: none;
+    font: inherit;
+    font-weight: 500;
+    background-color: #0D6EFD;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
 .container {
     text-align: center;
     padding: 1.5rem;

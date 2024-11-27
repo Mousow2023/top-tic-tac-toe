@@ -27,6 +27,11 @@ players.push(doudou);
 // Capture the div containing the cells from the DOM
 const cellsContainer = document.querySelector(".cells");
 
+// Capture the playerDisplay, playMoveInput and submitMove from the DOM
+const currentPlayerElement = document.querySelector(".current-player");
+const playerMoveInput = document.querySelector(".player-move");
+const submitMoveButton = document.querySelector(".submit-move");
+
 // The Gameboard
 const Gameboard = (function Gameboard() {
     const gameboard = Array(9).fill(null);
@@ -84,7 +89,7 @@ const Game = (function Game() {
 
     function playMatch() {
         if (players.length > 2) {
-            return alert("Sorry, there are too many players")
+            return alert("Sorry, there are too many players");
         }
 
         while (players.length !== 2) {
@@ -92,21 +97,57 @@ const Game = (function Game() {
         }
 
         if (players.length === 2) {
-            let randomIndex = Math.floor(Math.random() * players.length);
+            // Randomly choose who starts
+            let currentIndex = Math.floor(Math.random() * players.length);
 
-            while (!isWinner(Gameboard.gameboard)) {
-                const currentPlayer = players[randomIndex];
-                let playerMove;
-                do {
-                    playerMove = parseInt(prompt(`${currentPlayer.name}, pick a move`))
-                } while (isNaN(playerMove) || playerMove < 0 || playerMove > 8 || Gameboard.gameboard[playerMove] !== null);
-                currentPlayer.makeMove(playerMove);
-                randomIndex = alternate(players, randomIndex);
+            // Set the current player display
+            function displayCurrentPlayer() {
+                currentPlayerElement.textContent = `It's ${players[currentIndex].name}'s turn`;
             }
+            displayCurrentPlayer();
 
-            console.log(isWinner(Gameboard.gameboard));
+            // Handle the move submission
+            submitMoveButton.addEventListener("click", function handleMove() {
+                const playerMove = parseInt(playerMoveInput.value);
+
+                // Validate PlayerMove
+                if (
+                    isNaN(playerMove) ||
+                    playerMove < 1 ||
+                    playerMove > 9 ||
+                    Gameboard.gameboard[playerMove - 1] !== null
+                ) {
+                    alert("Invalid move. Please try again");
+                    return;
+                }
+
+                // Make the move
+                let currentPlayer = players[currentIndex];
+                currentPlayer.makeMove(playerMove);
+
+                // Check if there's a winner or a tie
+                const result = isWinner(Gameboard.gameboard);
+                if (result) {
+                    alert(result);
+                }
+
+                // Alternate to the next player and update the UI
+                currentIndex = alternate(players, currentIndex);
+                displayCurrentPlayer();
+
+                // Clear the input field for the next move
+                playerMoveInput.value = "";
+
+
+            });
+
+
+
+
+
         }
     }
+
 
     const winningCombinations = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
