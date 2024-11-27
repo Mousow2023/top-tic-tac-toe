@@ -9,7 +9,7 @@ Player.prototype.makeMove = function (index) {
     if (Gameboard.gameboard[index - 1] === null) {
         Gameboard.gameboard[index - 1] = this.symbol;
         this.moves++;
-        Gameboard.displayGameboard();
+        Gameboard.displayGameboard(Gameboard.gameboard);
         return true;
     } else {
         return false;
@@ -37,22 +37,25 @@ const resultElement = document.querySelector(".result");
 
 // Capture the start button
 const startButton = document.querySelector(".start");
-// Capture the reset button
 const resetButton = document.querySelector(".reset");
-// Capture the 
-
-
-startButton.addEventListener("click", function () {
-    Game.playMatch();
-});
-
-
 
 // The Gameboard
 const Gameboard = (function Gameboard() {
-    const gameboard = Array(9).fill(null);
+    let gameboard = Array(9).fill(null);
+
+    function reset() {
+        for (let i = 0; i < gameboard.length; i++) {
+            gameboard[i] = null;
+        }
+
+        displayGameboard(gameboard);
+
+        return gameboard;
+
+    }
 
     function displayGameboard(board = gameboard) {
+
         // Build the html of each cell
         let divAccumulator = [];
         for (let i = 0; i < board.length; i++) {
@@ -73,11 +76,11 @@ const Gameboard = (function Gameboard() {
         return divAccumulator;
     }
 
-    return { gameboard, displayGameboard };
+    return { gameboard, displayGameboard, reset };
 })();
 
 const Game = (function Game() {
-    Gameboard.displayGameboard();
+    Gameboard.displayGameboard(Gameboard.gameboard);
 
     function createPlayer() {
         const name = prompt(`Player number ${players.length + 1}, what is your name`);
@@ -104,6 +107,9 @@ const Game = (function Game() {
     }
 
     function playMatch() {
+        // Ensure the gameboard is reset before starting
+        Gameboard.displayGameboard(Gameboard.gameboard);
+
         if (players.length > 2) {
             return alert("Sorry, there are too many players");
         }
@@ -123,6 +129,7 @@ const Game = (function Game() {
             displayCurrentPlayer();
 
             // Handle the move submission
+            // Remove any existing event listeners before adding a new one
             submitMoveButton.addEventListener("click", function handleMove() {
                 const playerMove = parseInt(playerMoveInput.value);
 
@@ -145,6 +152,8 @@ const Game = (function Game() {
                 const result = isWinner(Gameboard.gameboard);
                 if (result) {
                     resultElement.textContent = result;
+                    newSubmitMoveButton.removeEventListener("click", handleMove);
+                    return;
                 }
 
                 // Alternate to the next player and update the UI
@@ -153,15 +162,22 @@ const Game = (function Game() {
 
                 // Clear the input field for the next move
                 playerMoveInput.value = "";
-
             });
         }
     }
 
-    function reset() {
-        Gameboard.gameboard = Array(9).fill(null);
-        Gameboard.displayGameboard(Gameboard.gameboard);
-    }
+
+    // Attach event listener to start and reset buttons
+    startButton.addEventListener("click", function () {
+        playMatch()
+    });
+
+    resetButton.addEventListener("click", function () {
+        window.location.reload()
+        Gameboard.reset();
+        resultElement.textContent = ""; // Clear result display
+        currentPlayerElement.textContent = ""; // Clear current player display
+    });
 
 
     const winningCombinations = [
@@ -202,7 +218,7 @@ const Game = (function Game() {
         }
     }
 
-    return { isWinner, playMatch, alternate, reset }
+    return { isWinner, playMatch, alternate }
 
 })();
 
