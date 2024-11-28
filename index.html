@@ -67,6 +67,31 @@
 
     <script src=" ./scripts.js"></script>
     <script>
+        // Display player One if there is:
+        const playerOneElement = document.querySelector(".player.one");
+        const playerTwoElement = document.querySelector(".player.two");
+
+        playerOneElement.textContent = displayPlayer("X");
+        playerTwoElement.textContent = displayPlayer("O");
+
+        console.log(displayPlayer("X"))
+
+        // Display player if matching symbol is found:
+        function displayPlayer(playerSymbol) {
+            let matchingPlayer;
+            for (let i = 0; i < players.length; i++) {
+                const player = players[i];
+                if (player.symbol === playerSymbol) {
+                    matchingPlayer = player;
+                    return `${matchingPlayer.name}: ${matchingPlayer.symbol}`;
+                };
+            }
+
+            if (!matchingPlayer) {
+                return `Name: ${playerSymbol}`;
+            }
+        }
+
         const formElement = document.querySelector(".form");
 
         const addPlayerButton = document.querySelector(".add");
@@ -92,8 +117,6 @@
                 addPlayerButton.classList.remove("hide");
                 addPlayerButton.classList.add("show");
             }
-
-            console.log(addPlayerButton.className);
 
             if (addPlayerButton.classList.contains("hide")) {
                 addPlayerButton.textContent = "X";
