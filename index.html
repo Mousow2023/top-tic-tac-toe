@@ -16,23 +16,16 @@
             <div></div>
             <div class="board">
                 <div class="move-input-container">
-                    <p class="current-player"></p>
+                    <p class="current-player">Click the <em>START</em> button to begin.</p>
                     <input type="number" class="player-move" placeholder="Enter your move (1-9)" min="1" max="9"
                         required />
                     <button class="submit-move">Submit Move</button>
                 </div>
                 <h4 class="player one">Name: X</h4>
+
                 <div class="cells">
-                    <!-- <div class="cell">0</div>
-                    <div class="cell">1</div>
-                    <div class="cell">2</div>
-                    <div class="cell">3</div>
-                    <div class="cell x">X</div>
-                    <div class="cell">5</div>
-                    <div class="cell">6</div>
-                    <div class="cell o">O</div>
-                    <div class="cell">8</div> -->
                 </div>
+
                 <h4 class="player two">Name: O</h4>
 
                 <h3 class="result"></h3>
@@ -53,8 +46,8 @@
                     <label for="symbol">Symbol:</label>
                     <select name="symbol" id="symbol">
                         <option value="" disabled selected>Select symbol</option>
-                        <option>X</option>
-                        <option>O</option>
+                        <option class="player-x">X</option>
+                        <option class="player-o">O</option>
                     </select>
                 </div>
                 <button class="submit">Submit</button>

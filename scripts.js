@@ -1,20 +1,4 @@
-// Capture the div containing the cells from the DOM
-const cellsContainer = document.querySelector(".cells");
-
-// Capture the playerDisplay, playMoveInput and submitMove from the DOM
-const currentPlayerElement = document.querySelector(".current-player");
-const playerMoveInput = document.querySelector(".player-move");
-const submitMoveButton = document.querySelector(".submit-move");
-
-// Capture the result section from the DOM
-const resultElement = document.querySelector(".result");
-
-// Capture the start button
-const startButton = document.querySelector(".start");
-const resetButton = document.querySelector(".reset");
-
 // Player Object
-
 const PLAYER = (function () {
     // List of players
     const players = []
@@ -64,31 +48,42 @@ const PLAYER = (function () {
     function addPlayer() {
         // Check if the players are not greater than two
         if (players.length >= 2) {
-            return alert("Impossible to add more than two players!")
+            return alert("Impossible to add more than two players!");
         }
 
         // Get the name and symbol of the player
+        const validSymbols = ["X", "O"];
+
         const playerName = document.getElementById("name").value;
         const playerSymbol = document.getElementById("symbol").value;
 
         // validate the name and symbol
-        if (playerName !== "" && playerSymbol !== "") {
-            players.push(new Player(playerName, playerSymbol.toUpperCase()));
-            console.log("player added successfully!");
+        // Check if the symbol if not already choosen
+        if (players.every(player => player.symbol !== playerSymbol)) {
+
+            if (playerName !== "" && validSymbols.includes(playerSymbol)) {
+                const selectedSymbol = document.querySelector(`.player-${playerSymbol.toLowerCase()}`);
+
+                // Disable the selected option
+                if (selectedSymbol) {
+                    selectedSymbol.disabled = true;
+                }
+
+                // Add the player to the list of players
+                players.push(new Player(playerName, playerSymbol.toUpperCase()));
+
+                // Reset the form
+                document.getElementById("name").value = "";
+                document.getElementById("symbol").value = "";
+
+                // Update the players display
+                playerOneElement.textContent = displayPlayer("X");
+                playerTwoElement.textContent = displayPlayer("O");
+            }
+
+        } else {
+            alert("Sorry. Symbol is already choosen");
         }
-        // const name = prompt(`Player number ${PLAYER.players.length + 1}, what is your name`);
-        // const symbol = prompt(`Player number ${PLAYER.players.length + 1}, what is your symbol`);
-
-        // if (name !== "" && symbol !== "") {
-        //     for (let i = 0; i < PLAYER.players.length; i++) {
-        //         const element = PLAYER.players[i];
-        //         if (element.symbol === symbol) {
-        //             return alert("Choosen symbol already exists, please choose something different");
-        //         }
-        //     }
-        // }
-
-        // return PLAYER.players.push(new PLAYER.Player(name.toLowerCase(), symbol.toUpperCase()));
     }
 
     const moustapha = new Player("moustapha", "X");
@@ -133,6 +128,8 @@ const Gameboard = (function Gameboard() {
         }
 
         // Update the html of the cells' container
+        // Capture the div containing the cells from the DOM
+        const cellsContainer = document.querySelector(".cells");
         cellsContainer.innerHTML = divAccumulator.join("");
 
         return divAccumulator;
@@ -144,6 +141,10 @@ const Gameboard = (function Gameboard() {
 
 const Game = (function Game() {
     Gameboard.displayGameboard(Gameboard.gameboard);
+
+    const currentPlayerElement = document.querySelector(".current-player");
+    // Capture the result section from the DOM
+    const resultElement = document.querySelector(".result");
 
     function alternate(playersArrary, currentIndex) {
         if (playersArrary.length === 2) {
@@ -177,7 +178,9 @@ const Game = (function Game() {
 
             // Handle the move submission
             // Remove any existing event listeners before adding a new one
+            const submitMoveButton = document.querySelector(".submit-move");
             submitMoveButton.addEventListener("click", function handleMove() {
+                const playerMoveInput = document.querySelector(".player-move");
                 const playerMove = parseInt(playerMoveInput.value);
 
                 // Validate PlayerMove
@@ -215,26 +218,38 @@ const Game = (function Game() {
     }
 
 
-    // Attach event listener to start and reset buttons
-    startButton.addEventListener("click", function () {
-        playMatch()
-    });
+    // Attach event listener to start and reset button
+    // Capture the start button
+    (function () {
+        const startButton = document.querySelector(".start");
+        startButton.addEventListener("click", function startGame() {
+            playMatch();
+            startButton.removeEventListener("click", startGame)
+        });
+    })();
 
-    resetButton.addEventListener("click", function () {
-        window.location.reload()
-        Gameboard.reset();
-        resultElement.textContent = ""; // Clear result display
-        currentPlayerElement.textContent = ""; // Clear current player display
-    });
-
-
-    const winningCombinations = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-        [0, 4, 8], [2, 4, 6], // Diagonals
-    ]
+    // Capture the reset button
+    (function () {
+        const resetButton = document.querySelector(".reset");
+        resetButton.addEventListener("click", function () {
+            window.location.reload()
+            Gameboard.reset();
+            resultElement.textContent = ""; // Clear result display
+            currentPlayerElement.textContent = ""; // Clear current player display
+        });
+    })();
 
     function isWinner(array) {
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6], // Diagonals
+        ]
+
+        function isMatch(array, index1, index2, index3) {
+            return (array[index1] !== null && array[index1] === array[index2] && array[index1] === array[index3]);
+        }
+
         for (let i = 0; i < winningCombinations.length; i++) {
             const element = winningCombinations[i];
 
@@ -269,8 +284,3 @@ const Game = (function Game() {
     return { isWinner, playMatch, alternate }
 
 })();
-
-
-function isMatch(array, index1, index2, index3) {
-    return (array[index1] !== null && array[index1] === array[index2] && array[index1] === array[index3]);
-}
