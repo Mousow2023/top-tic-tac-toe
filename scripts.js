@@ -1,29 +1,3 @@
-// Player Object
-function Player(name, symbol) {
-    this.name = name;
-    this.symbol = symbol.toUpperCase();
-    this.moves = 0;
-}
-
-Player.prototype.makeMove = function (index) {
-    if (Gameboard.gameboard[index - 1] === null) {
-        Gameboard.gameboard[index - 1] = this.symbol;
-        this.moves++;
-        Gameboard.displayGameboard(Gameboard.gameboard);
-        return true;
-    } else {
-        return false;
-    }
-}
-
-const players = []
-const moustapha = new Player("moustapha", "X");
-const doudou = new Player("doudou", "O");
-const foo = new Player("doudou", "Z");
-
-players.push(moustapha);
-players.push(doudou);
-
 // Capture the div containing the cells from the DOM
 const cellsContainer = document.querySelector(".cells");
 
@@ -38,6 +12,57 @@ const resultElement = document.querySelector(".result");
 // Capture the start button
 const startButton = document.querySelector(".start");
 const resetButton = document.querySelector(".reset");
+
+// Player Object
+
+const PLAYER = (function () {
+    // List of players
+    const players = []
+
+    // Player constructor
+    function Player(name, symbol) {
+        this.name = name;
+        this.symbol = symbol.toUpperCase();
+        this.moves = 0;
+    }
+
+    // make move for a player
+    Player.prototype.makeMove = function (index) {
+        if (Gameboard.gameboard[index - 1] === null) {
+            Gameboard.gameboard[index - 1] = this.symbol;
+            this.moves++;
+            Gameboard.displayGameboard(Gameboard.gameboard);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Display player if matching symbol is found:
+    function displayPlayer(playerSymbol) {
+        let matchingPlayer;
+        for (let i = 0; i < players.length; i++) {
+            const player = players[i];
+            if (player.symbol === playerSymbol) {
+                matchingPlayer = player;
+                return `${matchingPlayer.name}: ${matchingPlayer.symbol}`;
+            };
+        }
+
+        if (!matchingPlayer) {
+            return `Name: ${playerSymbol}`;
+        }
+    }
+
+    const moustapha = new Player("moustapha", "X");
+    const doudou = new Player("Pape", "O");
+
+    players.push(moustapha);
+    players.push(doudou);
+
+    return { Player, displayPlayer, players }
+})();
+
 
 // The Gameboard
 const Gameboard = (function Gameboard() {
@@ -79,23 +104,24 @@ const Gameboard = (function Gameboard() {
     return { gameboard, displayGameboard, reset };
 })();
 
+
 const Game = (function Game() {
     Gameboard.displayGameboard(Gameboard.gameboard);
 
     function createPlayer() {
-        const name = prompt(`Player number ${players.length + 1}, what is your name`);
-        const symbol = prompt(`Player number ${players.length + 1}, what is your symbol`).toUpperCase();
+        const name = prompt(`Player number ${PLAYER.players.length + 1}, what is your name`);
+        const symbol = prompt(`Player number ${PLAYER.players.length + 1}, what is your symbol`);
 
         if (name !== "" && symbol !== "") {
-            for (let i = 0; i < players.length; i++) {
-                const element = players[i];
+            for (let i = 0; i < PLAYER.players.length; i++) {
+                const element = PLAYER.players[i];
                 if (element.symbol === symbol) {
                     return alert("Choosen symbol already exists, please choose something different");
                 }
             }
         }
 
-        return players.push(new Player(name.toLowerCase(), symbol))
+        return PLAYER.players.push(new PLAYER.Player(name.toLowerCase(), symbol.toUpperCase()));
     }
 
     function alternate(playersArrary, currentIndex) {
@@ -110,21 +136,21 @@ const Game = (function Game() {
         // Ensure the gameboard is reset before starting
         Gameboard.displayGameboard(Gameboard.gameboard);
 
-        if (players.length > 2) {
+        if (PLAYER.players.length > 2) {
             return alert("Sorry, there are too many players");
         }
 
-        while (players.length !== 2) {
+        while (PLAYER.players.length !== 2) {
             createPlayer();
         }
 
-        if (players.length === 2) {
+        if (PLAYER.players.length === 2) {
             // Randomly choose who starts
-            let currentIndex = Math.floor(Math.random() * players.length);
+            let currentIndex = Math.floor(Math.random() * PLAYER.players.length);
 
             // Set the current player display
             function displayCurrentPlayer() {
-                currentPlayerElement.textContent = `It's ${players[currentIndex].name}'s turn`;
+                currentPlayerElement.textContent = `It's ${PLAYER.players[currentIndex].name}'s turn`;
             }
             displayCurrentPlayer();
 
@@ -145,19 +171,20 @@ const Game = (function Game() {
                 }
 
                 // Make the move
-                let currentPlayer = players[currentIndex];
+                let currentPlayer = PLAYER.players[currentIndex];
                 currentPlayer.makeMove(playerMove);
 
                 // Check if there's a winner or a tie
                 const result = isWinner(Gameboard.gameboard);
                 if (result) {
+                    document.querySelector(".move-input-container").textContent = "GAME OVER";
                     resultElement.textContent = result;
-                    newSubmitMoveButton.removeEventListener("click", handleMove);
+                    submitMoveButton.removeEventListener("click", handleMove);
                     return;
                 }
 
                 // Alternate to the next player and update the UI
-                currentIndex = alternate(players, currentIndex);
+                currentIndex = alternate(PLAYER.players, currentIndex);
                 displayCurrentPlayer();
 
                 // Clear the input field for the next move
@@ -210,8 +237,8 @@ const Game = (function Game() {
 
     function getWinner(winningSymbol) {
         // Announce the winner
-        for (let i = 0; i < players.length; i++) {
-            const player = players[i];
+        for (let i = 0; i < PLAYER.players.length; i++) {
+            const player = PLAYER.players[i];
             if (player.symbol === winningSymbol) {
                 return `${player.name.toUpperCase()} WON!`;
             }
@@ -221,6 +248,7 @@ const Game = (function Game() {
     return { isWinner, playMatch, alternate }
 
 })();
+
 
 function isMatch(array, index1, index2, index3) {
     return (array[index1] !== null && array[index1] === array[index2] && array[index1] === array[index3]);

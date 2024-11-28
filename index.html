@@ -67,30 +67,13 @@
 
     <script src=" ./scripts.js"></script>
     <script>
-        // Display player One if there is:
+        // Capture the players element from the DOM
         const playerOneElement = document.querySelector(".player.one");
         const playerTwoElement = document.querySelector(".player.two");
 
-        playerOneElement.textContent = displayPlayer("X");
-        playerTwoElement.textContent = displayPlayer("O");
-
-        console.log(displayPlayer("X"))
-
-        // Display player if matching symbol is found:
-        function displayPlayer(playerSymbol) {
-            let matchingPlayer;
-            for (let i = 0; i < players.length; i++) {
-                const player = players[i];
-                if (player.symbol === playerSymbol) {
-                    matchingPlayer = player;
-                    return `${matchingPlayer.name}: ${matchingPlayer.symbol}`;
-                };
-            }
-
-            if (!matchingPlayer) {
-                return `Name: ${playerSymbol}`;
-            }
-        }
+        // Display players One and Two if they exist
+        playerOneElement.textContent = PLAYER.displayPlayer("X");
+        playerTwoElement.textContent = PLAYER.displayPlayer("O");
 
         const formElement = document.querySelector(".form");
 
