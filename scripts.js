@@ -22,7 +22,7 @@ const PLAYER = (function () {
     // Player constructor
     function Player(name, symbol) {
         this.name = name;
-        this.symbol = symbol.toUpperCase();
+        this.symbol = symbol;
         this.moves = 0;
     }
 
@@ -54,11 +54,48 @@ const PLAYER = (function () {
         }
     }
 
+
+    const formSubmitButton = document.querySelector(".submit");
+    formSubmitButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        addPlayer();
+    });
+
+    function addPlayer() {
+        // Check if the players are not greater than two
+        if (players.length >= 2) {
+            return alert("Impossible to add more than two players!")
+        }
+
+        // Get the name and symbol of the player
+        const playerName = document.getElementById("name").value;
+        const playerSymbol = document.getElementById("symbol").value;
+
+        // validate the name and symbol
+        if (playerName !== "" && playerSymbol !== "") {
+            players.push(new Player(playerName, playerSymbol.toUpperCase()));
+            console.log("player added successfully!");
+        }
+        // const name = prompt(`Player number ${PLAYER.players.length + 1}, what is your name`);
+        // const symbol = prompt(`Player number ${PLAYER.players.length + 1}, what is your symbol`);
+
+        // if (name !== "" && symbol !== "") {
+        //     for (let i = 0; i < PLAYER.players.length; i++) {
+        //         const element = PLAYER.players[i];
+        //         if (element.symbol === symbol) {
+        //             return alert("Choosen symbol already exists, please choose something different");
+        //         }
+        //     }
+        // }
+
+        // return PLAYER.players.push(new PLAYER.Player(name.toLowerCase(), symbol.toUpperCase()));
+    }
+
     const moustapha = new Player("moustapha", "X");
     const doudou = new Player("Pape", "O");
 
     players.push(moustapha);
-    players.push(doudou);
+    // players.push(doudou);
 
     return { Player, displayPlayer, players }
 })();
@@ -108,22 +145,6 @@ const Gameboard = (function Gameboard() {
 const Game = (function Game() {
     Gameboard.displayGameboard(Gameboard.gameboard);
 
-    function createPlayer() {
-        const name = prompt(`Player number ${PLAYER.players.length + 1}, what is your name`);
-        const symbol = prompt(`Player number ${PLAYER.players.length + 1}, what is your symbol`);
-
-        if (name !== "" && symbol !== "") {
-            for (let i = 0; i < PLAYER.players.length; i++) {
-                const element = PLAYER.players[i];
-                if (element.symbol === symbol) {
-                    return alert("Choosen symbol already exists, please choose something different");
-                }
-            }
-        }
-
-        return PLAYER.players.push(new PLAYER.Player(name.toLowerCase(), symbol.toUpperCase()));
-    }
-
     function alternate(playersArrary, currentIndex) {
         if (playersArrary.length === 2) {
             return (currentIndex + 1) % 2;
@@ -140,8 +161,8 @@ const Game = (function Game() {
             return alert("Sorry, there are too many players");
         }
 
-        while (PLAYER.players.length !== 2) {
-            createPlayer();
+        if (PLAYER.players.length < 2) {
+            return alert("Not enough players. Please click on the 'Add Player' button to add a player.");
         }
 
         if (PLAYER.players.length === 2) {
